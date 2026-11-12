@@ -5,18 +5,17 @@ description: "Add OpenSEO Agent Skills to Claude Code, Codex, or another AI agen
 
 OpenSEO Agent Skills let you hand repeatable SEO workflows to your AI agent.
 
-Run a slash command when you need keyword research, clustering, competitor analysis, link prospecting, or project setup. The skill gives your agent the workflow instructions.
+Run a slash command when you need keyword research, AI visibility tracking, clustering, competitor analysis, link prospecting, or project setup. The skill gives your agent the workflow instructions.
 
-You stay in charge of strategy. Your agent uses OpenSEO data and the skill instructions to return a recommendation, plan, or shortlist.
+You stay in charge of strategy. Your agent uses OpenSEO data and the skill instructions to research the answer, then saves the result as a report in your project.
+
+No account yet? Try the [free SEO tools](/tools).
 
 ## Set up OpenSEO Agent Skills
 
-On Claude Code, the [OpenSEO plugin](/docs/claude-code-plugin) installs MCP and every skill below in one step. On Codex CLI, the [OpenSEO plugin](/docs/codex-plugin) does the same. Use the manual steps here for other agents, or if you want to pick individual skills.
-
-1. [Set up OpenSEO MCP](/docs/mcp).
-2. [Set up OpenSEO Agent Skills](/docs/skills/setup).
-
 MCP connects your agent to OpenSEO data. Skills tell your agent which SEO workflow to run.
+
+The OpenSEO plugins for Claude, ChatGPT and Codex include the skills. Connectors and MCP connections don't. [Install skills](/docs/skills/setup) shows how to check what your agent has and how to add the skills to any agent.
 
 ## Start here
 
@@ -25,7 +24,7 @@ MCP connects your agent to OpenSEO data. Skills tell your agent which SEO workfl
 
 ## Audit workflows
 
-- [SEO Audit](/docs/skills/seo-audit): audit a site and get a one-page, plain-language report built around a single next action.
+- [SEO Audit](/docs/skills/seo-audit): audit a site and understand its important problems, worthwhile improvements, and likely effects on traffic and the business.
 
 ## Research workflows
 
@@ -35,9 +34,18 @@ MCP connects your agent to OpenSEO data. Skills tell your agent which SEO workfl
 - [Competitor Analysis](/docs/skills/competitor-analysis): analyze one competitor and turn the research into strategic takeaways.
 - [Local SEO](/docs/skills/local-seo): audit a Google Business Profile, compare it to local competitors, and map Maps visibility around a location.
 
+## AI visibility workflows
+
+- [AI Visibility Audit](/docs/skills/ai-visibility-audit): find the few changes most likely to get your brand mentioned or cited in AI answers.
+- [AI Prompt Research](/docs/skills/ai-prompt-research): find the questions people ask about your market, how ChatGPT answers them, and which sites get cited.
+
 ## Promotion workflows
 
 - [Link Prospecting](/docs/skills/link-prospecting): find qualified outreach prospects and the angle that makes each one relevant.
+
+## How the results reach you
+
+- [SEO Report](/docs/skills/seo-report): the shared report-writing skill every workflow above delivers through. Your agent writes one self-contained HTML page and saves it to your project's Reports page, where anyone can read or print it.
 
 ## Learn more about skills
 
@@ -50,4 +58,4 @@ OpenSEO uses the same `SKILL.md` pattern supported by modern AI agents. To learn
 
 These pages explain what each skill is for. The source instructions live in GitHub:
 
-- [OpenSEO Agent Skills on GitHub](https://github.com/every-app/open-seo/tree/main/.agents/skills)
+- [OpenSEO Agent Skills on GitHub](https://github.com/every-app/open-seo/tree/main/plugins/openseo/skills)

@@ -16,17 +16,22 @@ import {
 // Both tools return the whole context, so they share one output shape. Every
 // MCP client pays for these schemas on tools/list, so the rows stay loose
 // objects — the rendered markdown in `text` is where the detail lives.
-const contextOutputSchema = {
-  sections: z.array(looseObjectOutputSchema),
-  missingSections: z.array(z.string()),
-  customSections: z.array(looseObjectOutputSchema),
-  competitors: z.array(looseObjectOutputSchema),
-  keyPages: z.array(looseObjectOutputSchema),
-  researchLog: z.array(looseObjectOutputSchema),
-  ...optionalMetaOutputSchema,
-} as const;
+// Clients cache this schema across deployments; new context fields must not
+// invalidate a response for clients still using the previous tools/list.
+const contextOutputSchema = z
+  .object({
+    sections: z.array(looseObjectOutputSchema),
+    missingSections: z.array(z.string()),
+    customSections: z.array(looseObjectOutputSchema),
+    competitors: z.array(looseObjectOutputSchema),
+    keyPages: z.array(looseObjectOutputSchema),
+    researchLog: z.array(looseObjectOutputSchema),
+    reportTemplates: z.array(looseObjectOutputSchema),
+    ...optionalMetaOutputSchema,
+  })
+  .passthrough();
 
-const contextPath = (projectId: string) => `/p/${projectId}/settings/context`;
+const contextPath = (projectId: string) => `/p/${projectId}/context`;
 
 const getInputSchema = { projectId: projectIdSchema } as const;
 
@@ -35,7 +40,7 @@ export const getProjectContextTool = {
   config: {
     title: "Get project context",
     description:
-      "Reads a project's shared memory: business overview, current goal, positioning, writing preferences, custom sections, competitors, key pages, and the recent research log. Uses no credits. Call this before SEO work to ground it in what the user already told OpenSEO, and check the research log before re-buying research. Sections listed as missing are the ones worth filling with update_project_context.",
+      "Read a project's shared memory: business overview, current goal, positioning, writing preferences, custom sections, competitors, key pages, and the recent research log. Call it before SEO work to ground the work in what the user already told OpenSEO, and check the research log before buying the same research again. Uses no credits. To fill sections listed as missing, use update_project_context.",
     inputSchema: getInputSchema,
     outputSchema: contextOutputSchema,
     annotations: {
@@ -69,7 +74,7 @@ const updateInputSchema = {
   // The batch cap lives with the server function's schema so both entry points
   // accept exactly the same patch list.
   updates: updateProjectContextSchema.shape.updates.describe(
-    "Patch ops, applied in order. Empty section content clears the section; adds upsert by domain/url; research-log entries are date-stamped by the server.",
+    'Patch ops, applied in order. Set the name AI visibility looks for in answers with {brandName: "Acme"}, after the user confirms it; an empty string goes back to the project name. Clear a standard section with {section: "current_goal", content: ""}; delete a custom section with {deleteCustomSection: "slug"}; removeCompetitors takes domains, removeKeyPages takes URLs, and removeResearchLog takes entry IDs from the project context. Adds upsert by domain/url; research-log entries are date-stamped by the server.',
   ),
 } as const;
 
@@ -84,7 +89,7 @@ export function buildUpdateProjectContextTool(author: ContextAuthor) {
     config: {
       title: "Update project context",
       description:
-        "Writes to a project's shared memory so the app, SAM, and other agents see it. Uses no credits. Send a list of patch ops; sections are prose (~4,000 chars max), competitors and key pages are curated shortlists (100 max each), and appendResearchLog records what research was bought so nobody re-buys it. Confirm facts with the user before storing them.",
+        "Add, edit, or delete entries in a project's shared memory, which the app, SAM, and other agents all read. Sections are prose (~4,000 characters max), competitors and key pages are curated shortlists (100 max each), and appendResearchLog records research already bought. Confirm facts with the user before storing them. Uses no credits. Call get_project_context first to find entries to remove; for report templates, use save_report_template.",
       inputSchema: updateInputSchema,
       outputSchema: contextOutputSchema,
       annotations: {
